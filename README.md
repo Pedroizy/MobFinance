@@ -90,7 +90,7 @@ MobFinance/
 - **React Native**
 - **Expo**
 - JavaScript ES6+
-- Componentes funcionais + Hooks
+- Componentes funcionais
 - StyleSheet e estilos modularizados
 
 ---
