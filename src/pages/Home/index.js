@@ -11,7 +11,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#5c5a5aff',
     alignItems: 'center',
     justifyContent: 'center',
   },
