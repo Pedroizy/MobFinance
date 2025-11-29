@@ -22,7 +22,7 @@ export default function Login({ navigation }) {
 
         {/* LOGO */}
         <Image
-          source={require("../../../assets/images/icon.png")}
+          source={require("../../../assets/images/logo.jpg")}
           style={styles.logo}
           resizeMode="contain"
         />
