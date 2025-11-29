@@ -9,7 +9,7 @@ import {
   View
 } from "react-native";
 
-export default function Home() {
+export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
@@ -19,9 +19,9 @@ export default function Home() {
       style={styles.container}
     >
       <View style={styles.content}>
-        
+
         {/* LOGO */}
-        <Image 
+        <Image
           source={require("../../../assets/images/icon.png")}
           style={styles.logo}
           resizeMode="contain"
@@ -54,9 +54,10 @@ export default function Home() {
         {/* LINHA CADASTRO */}
         <View style={styles.registerRow}>
           <Text style={styles.registerText}>Ainda não possui uma conta? </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
             <Text style={styles.registerLink}>Cadastre-se</Text>
           </TouchableOpacity>
+
         </View>
 
         {/* ESQUECI A SENHA */}
