@@ -22,7 +22,7 @@ export default function Login({ navigation }) {
 
         {/* LOGO */}
         <Image
-          source={require("../../../assets/images/icon.png")}
+          source={require("../../../assets/images/logo.jpg")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 
   button: {
     width: "100%",
-    backgroundColor: "#9CA7F3",
+    backgroundColor: "#8000ff",
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: "center",
