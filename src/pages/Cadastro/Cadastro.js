@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { signupUser } from '../../services/apiBackend';
 
 export default function SignupScreen({ navigation }) {
   const [nome, setNome] = useState('');
@@ -7,6 +8,48 @@ export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSignup() {
+    if (!nome || !sobrenome || !email || !senha || !confirmarSenha) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      Alert.alert("Erro", "As senhas não coincidem");
+      return;
+    }
+
+    if (senha.length < 6) {
+      Alert.alert("Erro", "A senha deve ter no mínimo 6 caracteres");
+      return;
+    }
+
+    const nameTrimmed = nome.trim();
+    const surnameTrimmed = sobrenome.trim();
+    const emailTrimmed = email.trim().toLowerCase();
+
+    if (!nameTrimmed || !surnameTrimmed) {
+      Alert.alert("Erro", "Nome e sobrenome não podem ser vazios");
+      return;
+    }
+
+    setLoading(true);
+    const result = await signupUser(nameTrimmed, surnameTrimmed, emailTrimmed, senha);
+    setLoading(false);
+
+    if (result.error) {
+      Alert.alert("Erro", result.error);
+      return;
+    }
+
+    // Cadastro bem-sucedido, vai direto para tela principal
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Main' }]
+    });
+  }
 
   return (
     <KeyboardAvoidingView
@@ -19,6 +62,8 @@ export default function SignupScreen({ navigation }) {
         style={styles.input}
         placeholder="Nome"
         placeholderTextColor="#888"
+        autoCapitalize="words"
+        autoCorrect={false}
         value={nome}
         onChangeText={setNome}
       />
@@ -27,6 +72,8 @@ export default function SignupScreen({ navigation }) {
         style={styles.input}
         placeholder="Sobrenome"
         placeholderTextColor="#888"
+        autoCapitalize="words"
+        autoCorrect={false}
         value={sobrenome}
         onChangeText={setSobrenome}
       />
@@ -59,8 +106,14 @@ export default function SignupScreen({ navigation }) {
         onChangeText={setConfirmarSenha}
       />
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Criar conta</Text>
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={handleSignup}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? "Criando..." : "Criar conta"}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.goBack()}>

@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -8,10 +9,36 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { loginUser } from "../../services/apiBackend";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin() {
+    if (!email || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
+    const emailTrimmed = email.trim().toLowerCase();
+
+    setLoading(true);
+    const result = await loginUser(emailTrimmed, senha);
+    setLoading(false);
+
+    if (result.error) {
+      Alert.alert("Erro", result.error);
+      return;
+    }
+
+    // Token e usuário já foram salvos pela função loginUser
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Main' }]
+    });
+  }
 
   return (
     <LinearGradient
@@ -32,6 +59,9 @@ export default function Login({ navigation }) {
           style={styles.input}
           placeholder="Endereço de e-mail"
           placeholderTextColor="#999"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
           value={email}
           onChangeText={setEmail}
         />
@@ -47,8 +77,14 @@ export default function Login({ navigation }) {
         />
 
         {/* BOTÃO ENTRAR */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Entrar</Text>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? "Entrando..." : "Entrar"}
+          </Text>
         </TouchableOpacity>
 
         {/* LINHA CADASTRO */}
@@ -61,7 +97,10 @@ export default function Login({ navigation }) {
         </View>
 
         {/* ESQUECI A SENHA */}
-        <TouchableOpacity style={{ marginTop: 30 }}>
+        <TouchableOpacity 
+          style={{ marginTop: 30 }}
+          onPress={() => navigation.navigate("RecuperarSenha")}
+        >
           <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
         </TouchableOpacity>
       </View>
