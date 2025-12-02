@@ -101,23 +101,31 @@ export default function Main({ navigation }) {
   }
 
   async function handleLogout() {
-    Alert.alert(
-      "Sair",
-      "Deseja realmente sair da sua conta?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Sair",
-          onPress: async () => {
-            await AsyncStorage.multiRemove(['@token', '@user']);
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Home' }]
-            });
-          }
-        }
-      ]
-    );
+    console.log('🚪 handleLogout chamado!');
+    
+    // Confirmar logout
+    const confirmLogout = window.confirm 
+      ? window.confirm("Deseja realmente sair da sua conta?")
+      : true;
+    
+    if (!confirmLogout) {
+      console.log('❌ Logout cancelado');
+      return;
+    }
+
+    console.log('✅ Fazendo logout...');
+    try {
+      await AsyncStorage.multiRemove(['@token', '@user']);
+      console.log('✅ Dados removidos, navegando para Home...');
+      
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }]
+      });
+    } catch (error) {
+      console.error('❌ Erro ao fazer logout:', error);
+      alert('Erro ao sair. Tente novamente.');
+    }
   }
 
   if (loading) {

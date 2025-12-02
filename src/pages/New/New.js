@@ -66,16 +66,25 @@ export default function New({ navigation, route }) {
           placeholderTextColor="#888"
           value={label}
           onChangeText={setLabel}
-          autoFocus
+          returnKeyType="next"
+          blurOnSubmit={false}
+          autoComplete="off"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <TextInput
           style={styles.input}
           placeholder="Valor"
           placeholderTextColor="#888"
-          keyboardType="numeric"
+          keyboardType="decimal-pad"
           value={amount}
           onChangeText={setAmount}
+          returnKeyType="done"
+          selectTextOnFocus
+          autoComplete="off"
+          autoCorrect={false}
+          spellCheck={false}
         />
 
         <TouchableOpacity
@@ -125,6 +134,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#ddd',
+    outline: 'none', // Remove o outline azul no web
+    userSelect: 'text', // Permite seleção de texto
+    cursor: 'text', // Cursor de texto
   },
   button: {
     marginTop: 10,

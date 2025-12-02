@@ -16,3 +16,8 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd 'C:\Users\vjon
 
 
 **ISSO TUDO É COLOCADO NO TERMINAL**
+
+
+
+
+**PRA EVITAR PROBLEMAS DE UM NPM INSTALL**

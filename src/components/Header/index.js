@@ -4,12 +4,25 @@ import { Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, 
 const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 0;
 
 export default function Header({ name, onLogout }) {
+  const handleLogoutPress = () => {
+    console.log('🚪 Botão de sair clicado!');
+    if (onLogout) {
+      onLogout();
+    } else {
+      console.error('❌ onLogout não foi passado como prop!');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.username}>Olá, {name}</Text>
 
-        <TouchableOpacity activeOpacity={0.7} style={styles.buttonUser} onPress={onLogout}>
+        <TouchableOpacity 
+          activeOpacity={0.7} 
+          style={styles.buttonUser} 
+          onPress={handleLogoutPress}
+        >
           <Feather name="log-out" size={24} color="#FFF" />
         </TouchableOpacity>
       </View>
