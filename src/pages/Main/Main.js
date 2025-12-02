@@ -1,22 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ActivityIndicator
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    View
 } from 'react-native';
-import { getTransactions, getBalance, deleteTransaction } from '../../services/apiBackend';
-import Header from '../../components/Header';
-import Balance from '../../components/Balance';
 import Actions from '../../components/Actions';
+import Balance from '../../components/Balance';
+import Header from '../../components/Header';
 import Movements from '../../components/Movements';
+import { deleteTransaction, getBalance, getTransactions } from '../../services/apiBackend';
 
 export default function Main({ navigation }) {
   const [user, setUser] = useState(null);

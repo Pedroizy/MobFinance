@@ -1,5 +1,5 @@
-import prisma from './database';
 import * as Crypto from 'expo-crypto';
+import prisma from './database';
 
 // Função para criptografar senha
 async function hashPassword(password) {
