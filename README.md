@@ -4,6 +4,34 @@ MobFinance é uma aplicação para gerenciamento financeiro pessoal, composta po
 
 ---
 
+# 👥 Equipe de Desenvolvimento
+
+### **1. Pedro Izidio — Líder e Portela Front-end & Arquitetura**
+- Organização da estrutura do projeto  
+- Criação da arquitetura base e navegação  
+- Desenvolvimento das telas e integração entre componentes  
+
+### **2. Pedro Izidio — Desenvolvedor de Componentes**
+- Construção de componentes reutilizáveis  
+- Responsável por Header, Balance, Movements, Actions  
+
+### **3. Rick — Designer UX/UI**
+- Definição das cores, tipografia e estilo visual  
+- Criação dos layouts e protótipos  
+- Garantia da boa experiência do usuário  
+
+### **4. Paulista — Lógica de Dados**
+- Implementação da estrutura de dados  
+- Organização de estados e fluxo interno  
+- Lógica da listagem de movimentações  
+
+### **5. Indiano(Alfred) — Documentação e Testes**
+- Escrita de documentação  
+- Testes manuais de interface  
+- Revisão e padronização do código  
+
+---
+
 ## Estrutura do Projeto
 
 A estrutura do projeto está organizada da seguinte forma:
