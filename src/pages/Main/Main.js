@@ -8,13 +8,14 @@ import {
     RefreshControl,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Actions from '../../components/Actions';
-import Balance from '../../components/Balance';
 import Header from '../../components/Header';
 import Movements from '../../components/Movements';
-import { deleteTransaction, getBalance, getTransactions } from '../../services/apiBackend';
+import { deleteTransaction, getBalance, getTransactions, logoutUser } from '../../services/apiBackend';
 
 export default function Main({ navigation }) {
   const [user, setUser] = useState(null);
@@ -22,6 +23,7 @@ export default function Main({ navigation }) {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
 
   useEffect(() => {
     loadUserData();
@@ -47,28 +49,26 @@ export default function Main({ navigation }) {
 
   async function loadTransactions() {
     setLoading(true);
-    
-    // Carregar transações
-    const transactionsResult = await getTransactions();
-    if (!transactionsResult.error) {
-      setTransactions(transactionsResult);
-      
-      // Debug: mostrar transações
-      console.log('📊 Transações carregadas:', transactionsResult);
-      const despesas = transactionsResult.filter(t => t.type === 0);
-      const receitas = transactionsResult.filter(t => t.type === 1);
-      console.log('💸 Despesas (type=0):', despesas);
-      console.log('💰 Receitas (type=1):', receitas);
-    }
 
-    // Carregar saldo
-    const balanceResult = await getBalance();
-    if (!balanceResult.error) {
-      setBalance(balanceResult.balance);
-      console.log('💵 Saldo:', balanceResult.balance);
-    }
+    try {
+      // Carregar transações
+      const transactionsResult = await getTransactions();
+      if (!transactionsResult.error) {
+        setTransactions(transactionsResult);
+        console.log('📊 Transações carregadas:', transactionsResult);
+      }
 
-    setLoading(false);
+      // Carregar saldo
+      const balanceResult = await getBalance();
+      if (!balanceResult.error) {
+        setBalance(balanceResult.balance);
+        console.log('💵 Saldo atualizado:', balanceResult.balance);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar transações ou saldo:', error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function onRefresh() {
@@ -102,36 +102,32 @@ export default function Main({ navigation }) {
 
   async function handleLogout() {
     console.log('🚪 handleLogout chamado!');
-    
-    // Confirmar logout
-    const confirmLogout = window.confirm 
-      ? window.confirm("Deseja realmente sair da sua conta?")
-      : true;
-    
-    if (!confirmLogout) {
-      console.log('❌ Logout cancelado');
-      return;
-    }
 
-    console.log('✅ Fazendo logout...');
     try {
-      await AsyncStorage.multiRemove(['@token', '@user']);
-      console.log('✅ Dados removidos, navegando para Home...');
-      
+      // Chama a função de logout do backend
+      await logoutUser();
+
+      console.log('✅ Logout bem-sucedido, navegando para Home...');
+
+      // Redireciona para a tela de login
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }]
+        routes: [{ name: 'Home' }],
       });
     } catch (error) {
       console.error('❌ Erro ao fazer logout:', error);
-      alert('Erro ao sair. Tente novamente.');
+      Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
     }
+  }
+
+  function toggleBalanceVisibility() {
+    setShowBalance(!showBalance);
   }
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#8000ff" />
+        <ActivityIndicator size="large" color="#6200ea" />
         <Text style={styles.loadingText}>Carregando...</Text>
       </View>
     );
@@ -141,16 +137,34 @@ export default function Main({ navigation }) {
     <View style={styles.container}>
       <Header 
         name={user?.nome || 'Usuário'} 
-        onLogout={handleLogout}
+        onLogout={handleLogout} 
       />
 
-      <Balance 
-        saldo={balance}
-        gastos={Math.abs(transactions
-          .filter(t => t.type === 0)
-          .reduce((sum, t) => sum + t.value, 0))
-        }
-      />
+      <View style={styles.balanceContainer}>
+        <View style={styles.balanceItem}>
+          <Text style={styles.balanceLabel}>Saldo</Text>
+          <Text style={styles.balanceValue}>
+            {showBalance ? `R$ ${balance.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '***'}
+          </Text>
+        </View>
+        <View style={styles.balanceItem}>
+          <Text style={styles.balanceLabel}>Gastos</Text>
+          <Text style={styles.balanceValue}>
+            {showBalance ? `R$ ${transactions
+              .filter(transaction => transaction.type === 0 && typeof transaction.value === 'number' && transaction.value >= 0)
+              .reduce((total, transaction) => total + transaction.value, 0)
+              .toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '***'}
+          </Text>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.toggleButton} onPress={toggleBalanceVisibility}>
+        <Icon 
+          name={showBalance ? 'visibility-off' : 'visibility'} 
+          size={24} 
+          color="#fff" 
+        />
+      </TouchableOpacity>
 
       <Actions navigation={navigation} onRefresh={loadTransactions} />
 
@@ -189,27 +203,55 @@ export default function Main({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#f5f5f5',
+    padding: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fafafa',
+    backgroundColor: '#f5f5f5',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#555',
+    color: '#6200ea',
+  },
+  balanceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+    padding: 16,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  balanceItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  balanceLabel: {
+    fontSize: 16,
+    color: '#888',
+  },
+  balanceValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    margin: 14,
+    marginVertical: 16,
+    color: '#333',
+    textAlign: 'center',
   },
   list: {
-    marginStart: 14,
-    marginEnd: 14,
+    marginHorizontal: 16,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -218,13 +260,25 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#555',
+    color: '#888',
     fontWeight: '600',
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#888',
+    color: '#aaa',
     marginTop: 8,
     textAlign: 'center',
+  },
+  toggleButton: {
+    marginTop: 10,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent', // Torna o botão transparente
+  },
+  toggleButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

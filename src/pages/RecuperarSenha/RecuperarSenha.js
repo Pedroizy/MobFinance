@@ -30,7 +30,12 @@ export default function RecuperarSenha({ navigation }) {
     setLoading(false);
 
     if (result.error) {
-      Alert.alert("Erro", result.error);
+      Alert.alert("Erro", "Email não encontrado. Tente novamente.", [
+        {
+          text: "OK",
+          onPress: () => setEtapa(1),
+        },
+      ]);
       return;
     }
 

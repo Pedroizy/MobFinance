@@ -1,4 +1,4 @@
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Actions({ navigation, onRefresh }) {
@@ -13,23 +13,19 @@ export default function Actions({ navigation, onRefresh }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.actionButton}
+        style={[styles.actionButton, styles.incomeButton]}
         onPress={handleAddIncome}
       >
-        <View style={styles.areaButton}>
-          <AntDesign name="addfolder" size={26} color="#000" />
-        </View>
-        <Text style={styles.labelButton}>Entrada</Text>
+        <MaterialIcons name="attach-money" size={32} color="#4CAF50" />
+        <Text style={styles.labelButton}>Adicionar Receita</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.actionButton}
+        style={[styles.actionButton, styles.expenseButton]}
         onPress={handleAddExpense}
       >
-        <View style={styles.areaButton}>
-          <AntDesign name="tagso" size={26} color="#000" />
-        </View>
-        <Text style={styles.labelButton}>Saída</Text>
+        <MaterialIcons name="money-off" size={32} color="#F44336" />
+        <Text style={styles.labelButton}>Adicionar Despesa</Text>
       </TouchableOpacity>
     </View>
   );
@@ -37,30 +33,34 @@ export default function Actions({ navigation, onRefresh }) {
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: 150,
-    marginBottom: 14,
-    marginTop: 18,
-    paddingStart: 14,
-    paddingEnd: 14,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    marginVertical: 20,
   },
   actionButton: {
-    flex: 1,
     alignItems: 'center',
-    marginRight: 8,
-  },
-  areaButton: {
-    backgroundColor: '#ecf0f1',
-    height: 60,
-    width: 60,
-    borderRadius: 30,
     justifyContent: 'center',
-    alignItems: 'center',
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  incomeButton: {
+    borderColor: '#4CAF50',
+    borderWidth: 1,
+  },
+  expenseButton: {
+    borderColor: '#F44336',
+    borderWidth: 1,
   },
   labelButton: {
-    marginTop: 4,
-    fontSize: 15,
-    fontWeight: '600',
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
