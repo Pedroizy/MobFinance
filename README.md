@@ -119,6 +119,14 @@ MobFinance/
 
 ---
 
+## Pra fazer o banco de dados funcionar é só colocar esse comando
+
+
+cd backend; npx prisma generate --schema=prisma/schema.prisma; npx prisma db push --schema=prisma/schema.prisma
+´´´
+
+---
+
 ## Observações
 
 - Certifique-se de que o backend e o frontend estão na mesma rede para que possam se comunicar.
