@@ -1,5 +1,9 @@
+import axios from 'axios';
 import * as Crypto from 'expo-crypto';
-import prisma from './database';
+
+const api = axios.create({
+  baseURL: 'http://192.168.1.32:3000/api',
+});
 
 // Função para criptografar senha
 async function hashPassword(password) {
@@ -22,19 +26,8 @@ export async function loginUser(email, password) {
       return { error: 'Email inválido' };
     }
 
-    const hashedPassword = await hashPassword(password);
-    
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (!user || user.senha !== hashedPassword) {
-      return { error: 'Email ou senha incorretos' };
-    }
-
-    // Não retorna a senha
-    const { senha, ...userWithoutPassword } = user;
-    return { data: userWithoutPassword };
+    const response = await api.post('/auth/login', { email, password });
+    return response.data;
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     return { error: 'Erro ao fazer login. Tente novamente.' };
@@ -48,29 +41,13 @@ export async function signupUser(nome, sobrenome, email, password) {
       return { error: 'Email inválido' };
     }
 
-    const hashedPassword = await hashPassword(password);
-    
-    // Verifica se o email já existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
+    const response = await api.post('/auth/signup', {
+      nome,
+      sobrenome,
+      email,
+      senha: password,
     });
-
-    if (existingUser) {
-      return { error: 'Email já cadastrado' };
-    }
-
-    const user = await prisma.user.create({
-      data: {
-        nome,
-        sobrenome,
-        email,
-        senha: hashedPassword,
-      },
-    });
-
-    // Não retorna a senha
-    const { senha, ...userWithoutPassword } = user;
-    return { data: userWithoutPassword };
+    return response.data;
   } catch (error) {
     console.error('Erro ao criar conta:', error);
     return { error: 'Erro ao criar conta. Tente novamente.' };
@@ -80,77 +57,50 @@ export async function signupUser(nome, sobrenome, email, password) {
 // Buscar transações do usuário
 export async function getTransactions(userId) {
   try {
-    const transactions = await prisma.transaction.findMany({
-      where: { userId },
-      orderBy: { data: 'desc' }
-    });
-
-    return { data: transactions };
+    const response = await api.get(`/transactions?userId=${userId}`);
+    return response.data;
   } catch (error) {
-    return { error: 'Erro ao buscar transações: ' + error.message };
+    console.error('Erro ao buscar transações:', error);
+    return { error: 'Erro ao buscar transações. Tente novamente.' };
   }
 }
 
 // Criar nova transação
 export async function createTransaction(userId, tipo, descricao, valor) {
   try {
-    const transaction = await prisma.transaction.create({
-      data: {
-        userId,
-        tipo,
-        descricao,
-        valor: parseFloat(valor),
-      }
+    const response = await api.post('/transactions', {
+      userId,
+      tipo,
+      descricao,
+      valor,
     });
-
-    return { data: transaction };
+    return response.data;
   } catch (error) {
-    return { error: 'Erro ao criar transação: ' + error.message };
+    console.error('Erro ao criar transação:', error);
+    return { error: 'Erro ao criar transação. Tente novamente.' };
   }
 }
 
 // Deletar transação
-export async function deleteTransaction(transactionId, userId) {
+export async function deleteTransaction(transactionId) {
   try {
-    // Verifica se a transação pertence ao usuário
-    const transaction = await prisma.transaction.findFirst({
-      where: {
-        id: transactionId,
-        userId: userId
-      }
-    });
-
-    if (!transaction) {
-      return { error: 'Transação não encontrada' };
-    }
-
-    await prisma.transaction.delete({
-      where: { id: transactionId }
-    });
-
-    return { data: { message: 'Transação deletada com sucesso' } };
+    const response = await api.delete(`/transactions/${transactionId}`);
+    return response.data;
   } catch (error) {
-    return { error: 'Erro ao deletar transação: ' + error.message };
+    console.error('Erro ao deletar transação:', error);
+    return { error: 'Erro ao deletar transação. Tente novamente.' };
   }
 }
 
 // Calcular saldo do usuário
 export async function getBalance(userId) {
   try {
-    const transactions = await prisma.transaction.findMany({
-      where: { userId }
-    });
-
-    const balance = transactions.reduce((acc, transaction) => {
-      if (transaction.tipo === 'entrada') {
-        return acc + transaction.valor;
-      } else {
-        return acc - transaction.valor;
-      }
-    }, 0);
-
-    return { data: { balance } };
+    const response = await api.get(`/balance?userId=${userId}`);
+    return response.data;
   } catch (error) {
-    return { error: 'Erro ao calcular saldo: ' + error.message };
+    console.error('Erro ao calcular saldo:', error);
+    return { error: 'Erro ao calcular saldo. Tente novamente.' };
   }
 }
+
+export default api;

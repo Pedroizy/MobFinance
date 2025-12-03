@@ -209,4 +209,23 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
+// Listar usuários
+router.get('/users', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        nome: true,
+        sobrenome: true,
+        email: true,
+        createdAt: true,
+      },
+    });
+    res.json(users);
+  } catch (error) {
+    console.error('Erro ao listar usuários:', error);
+    res.status(500).json({ error: 'Erro ao listar usuários' });
+  }
+});
+
 module.exports = router;

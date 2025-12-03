@@ -44,10 +44,10 @@ export default function SignupScreen({ navigation }) {
       return;
     }
 
-    // Cadastro bem-sucedido, vai direto para tela principal
+    // Cadastro bem-sucedido, vai para tela de login (Home)
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Main' }]
+      routes: [{ name: 'Home' }]
     });
   }
 

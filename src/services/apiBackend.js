@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // CONFIGURAÇÃO DA API
 // Troque para o IP da sua máquina se estiver testando em dispositivo físico
 const API_URL = __DEV__ 
-  ? 'http://10.10.35.63:3000/api'  // Desenvolvimento
+  ? 'http://192.168.1.32:3000/api'  // Desenvolvimento
   : 'https://sua-api-producao.com/api';  // Produção
 
 // Função auxiliar para requisições

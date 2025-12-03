@@ -37,9 +37,6 @@ const styles = StyleSheet.create({
     paddingBottom: 22,
     zIndex: 99,
     elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
   },
   itemTitle: {
     fontSize: 20,

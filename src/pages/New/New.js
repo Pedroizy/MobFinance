@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#ddd',
-    outline: 'none', // Remove o outline azul no web
     userSelect: 'text', // Permite seleção de texto
     cursor: 'text', // Cursor de texto
   },
