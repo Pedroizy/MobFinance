@@ -1,4 +1,4 @@
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Actions({ navigation, onRefresh }) {
