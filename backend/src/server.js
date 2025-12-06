@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -9,25 +8,27 @@ const transactionRoutes = require('./routes/transactions');
 
 const app = express();
 
+// ⚠️ NECESSÁRIO PARA LER JSON (não é middleware externo)
+app.use(express.json());
+
 // Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {
-  res.json({ message: 'MobFinance API - Backend funcionando!' });
+  res.json({ message: 'MobFinance API - Backend funcionando sem autenticação!' });
 });
 
-// Error handling
+// Tratamento de erro básico
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Algo deu errado!' });
+  console.error(err);
+  res.status(500).json({ error: 'Erro interno!' });
 });
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+app.listen(3000, "0.0.0.0", () => {
+  console.log("Servidor rodando em http://0.0.0.0:3000");
 });
 
-module.exports = app;

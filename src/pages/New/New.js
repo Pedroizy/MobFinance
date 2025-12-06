@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-import { createTransaction } from '../../services/apiBackend';
+import { createTransaction } from '../../services/apiBackend2';
 
 export default function New({ navigation, route }) {
   const [label, setLabel] = useState('');

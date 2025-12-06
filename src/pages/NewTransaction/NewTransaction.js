@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import api from '../../services/apiBackend';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import api from '../../services/apiBackend2';
 
 export default function NewTransaction() {
   const [type, setType] = useState(0); // 0 = despesa, 1 = receita

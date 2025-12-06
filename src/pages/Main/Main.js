@@ -2,20 +2,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Actions from '../../components/Actions';
 import Header from '../../components/Header';
 import Movements from '../../components/Movements';
-import { deleteTransaction, getBalance, getTransactions, logoutUser } from '../../services/apiBackend';
+import { deleteTransaction, getBalance, getTransactions, logoutUser } from '../../services/apiBackend2';
 
 export default function Main({ navigation }) {
   const [user, setUser] = useState(null);
@@ -204,14 +204,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 16,
+    padding: 0,
+    height: 500,
+    width: '100%',
   },
+
   loadingContainer: {
+    paddingTop: 20,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
+  
   loadingText: {
     marginTop: 10,
     fontSize: 16,

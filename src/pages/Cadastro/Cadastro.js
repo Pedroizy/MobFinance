@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
-import { signupUser } from '../../services/apiBackend';
+import { signupUser } from '../../services/apiBackend2';
 
 export default function SignupScreen({ navigation }) {
   const [nome, setNome] = useState('');

@@ -8,9 +8,15 @@
     "scheme": "mobfinance",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+
+    "extra": {
+      "EXPO_PUBLIC_API_URL": "http://192.168.0.12:3000"
+    },
+
     "ios": {
       "supportsTablet": true
     },
+
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -21,10 +27,12 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
+
     "web": {
       "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
+
     "plugins": [
       [
         "expo-splash-screen",
@@ -39,6 +47,7 @@
         }
       ]
     ],
+
     "experiments": {
       "reactCompiler": true
     }

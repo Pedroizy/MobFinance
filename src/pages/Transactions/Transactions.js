@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import api from '../../services/apiBackend';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import api from '../../services/apiBackend2';
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
