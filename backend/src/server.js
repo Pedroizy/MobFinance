@@ -9,10 +9,6 @@ const transactionRoutes = require('./routes/transactions');
 
 const app = express();
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
-
 // Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);

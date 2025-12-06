@@ -1,14 +1,19 @@
 ﻿const express = require('express');
-const { authenticateToken } = require('../middleware/auth');
 const prisma = require('../db');
 
 const router = express.Router();
 
 // Buscar todas as transações do usuário
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
+    const userId = req.query.userId; // Recebe via query
+
+    if (!userId) {
+      return res.status(400).json({ error: 'userId é obrigatório' });
+    }
+
     const transactions = await prisma.transaction.findMany({
-      where: { userId: req.user.id },
+      where: { userId },
       orderBy: { date: 'desc' }
     });
 
@@ -20,53 +25,53 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Criar nova transação
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const { type, description, value } = req.body;
+    const { type, description, value, userId } = req.body;
 
-    console.log('💸 Criar transação - Body recebido:', { type, description, value });
-
-    if (type === undefined || !description || value === undefined) {
-      return res.status(400).json({ error: 'Type, description e value são obrigatórios' });
+    if (!userId) {
+      return res.status(400).json({ error: 'userId é obrigatório' });
     }
 
-    if (type !== 0 && type !== 1) {
-      return res.status(400).json({ error: 'Type deve ser 0 (despesa) ou 1 (receita)' });
+    if (type === undefined || !description || value === undefined) {
+      return res.status(400).json({ error: 'Type, description, value e userId são obrigatórios' });
     }
 
     const transaction = await prisma.transaction.create({
       data: {
-        type: parseInt(type),
+        type: Number(type),
         description,
-        value: parseFloat(value),
-        userId: req.user.id
+        value: Number(value),
+        userId
       }
     });
 
-    console.log('✅ Transação criada:', transaction.id);
     res.status(201).json({ transaction });
   } catch (error) {
-    console.error('❌ Erro ao criar transação:', error);
+    console.error('Erro ao criar transação:', error);
     res.status(500).json({ error: 'Erro ao criar transação' });
   }
 });
 
 // Deletar transação
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const { userId } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'userId é obrigatório' });
+    }
 
     const transaction = await prisma.transaction.findFirst({
-      where: { id, userId: req.user.id }
+      where: { id, userId }
     });
 
     if (!transaction) {
       return res.status(404).json({ error: 'Transação não encontrada' });
     }
 
-    await prisma.transaction.delete({
-      where: { id }
-    });
+    await prisma.transaction.delete({ where: { id } });
 
     res.json({ message: 'Transação deletada com sucesso' });
   } catch (error) {
@@ -76,10 +81,16 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // Calcular saldo
-router.get('/balance', authenticateToken, async (req, res) => {
+router.get('/balance', async (req, res) => {
   try {
+    const userId = req.query.userId;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'userId é obrigatório' });
+    }
+
     const transactions = await prisma.transaction.findMany({
-      where: { userId: req.user.id }
+      where: { userId }
     });
 
     const balance = transactions.reduce((acc, t) => {
