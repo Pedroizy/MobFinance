@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as Crypto from 'expo-crypto';
 
 const api = axios.create({
-  baseURL: 'http://192.168.1.32:3000/api',
+  baseURL: 'http://192.168.1.43:3000/api',
 });
 
 // Função para criptografar senha

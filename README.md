@@ -82,6 +82,11 @@ MobFinance/
    - Certifique-se de que o arquivo `.env` está configurado corretamente com as credenciais do banco de dados.
    - Rode as migrações do Prisma:
      ```bash
+     
+     cd backend
+     npm install prisma @prisma/client
+     npx prisma generate
+     npx prisma db push
      npx prisma migrate dev
      ```
 
